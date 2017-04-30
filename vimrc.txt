@@ -1,0 +1,133 @@
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-surround'
+Plugin 'godlygeek/tabular'
+Plugin 'klen/python-mode'
+Plugin 'teranex/jk-jumps.vim'
+Plugin 'ervandew/supertab'
+Plugin 'jeetsukumaran/vim-buffersaurus'
+call vundle#end()
+
+"Set terminal colors to solarized manually
+syntax enable
+colorscheme solarized
+set background=dark
+
+"Airline Plugin Settings
+let g:airline_powerline_fonts=1
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#fnamemod=':t'
+let g:airline_theme='dandark'
+let g:airline#extensions#whitespace#mixed_indent_algo = 2
+let g:airline#extensions#whitespace#checks = ['mixed-indent-file', 'indent']
+
+"Buffersaurus
+"Keep buffersaurus search window open
+let g:buffersaurus_autodismiss_on_select=0
+"let buffersaurus use current window
+let g:buffersaurus_viewport_split_policy="N"
+
+"Pymode Settings
+let g:pymode_options = 0
+let g:pymode_lint_checkers = ['pyflakes']
+let g:pymode_lint_on_fly = 0
+let g:pymode_folding = 0
+let g:pymode_python = 'python3'
+let g:pymode_doc = 1
+set completeopt=menu
+let g:pymode_rope_complete_on_dot = 1
+let g:pymode_options_colorcolumn = 0
+let g:pymode_run = 0
+let g:pymode_breakpoint = 0
+let g:pymode_motion = 0
+let g:pymode_virtualenv = 1
+let g:pymode_lint_signs = 0
+let g:pymode_indent = 1
+
+"mandatory
+filetype on
+filetype plugin on
+
+"General features
+set number
+set noswapfile
+set hidden
+set nobackup
+set incsearch
+set nrformats=hex
+set ignorecase
+set ruler
+set showcmd
+set relativenumber
+set splitright
+set splitbelow
+set clipboard=unnamed
+set laststatus=2
+set nowrap
+set so=3
+set autochdir
+set linebreak
+set nostartofline
+highlight cursorlinenr ctermfg=190
+
+"python formatting and specific maps
+set tabstop=4
+set shiftwidth=4 
+"set autoindent
+"prevent python comments from being unindented
+"set cindent
+
+"nnoremap <leader>rr :w!<CR>:!python3 %<CR>
+nnoremap <leader>rr :w!<CR>:silent !tmux split-window -h 'python3 %'<CR>
+:command! Pygo execute ":silent !tmux new-window 'python3 %'" | execute ':redraw!'
+"go to debug mode
+nnoremap <leader>d :w!<CR>:!python3 -m pdb %<CR>
+"inserts breakpoints
+nnoremap <leader>b oimport pdb;pdb.set_trace()<Esc>
+"clears all breakpoints
+nnoremap <leader><S-b> ggdd:g/pdb.set_trace()/d<CR>gg:w!<CR>
+ 
+
+"leader mappings: for operations at file level, debugging, or plugin shortcuts
+let mapleader ='\'
+nnoremap <leader>w :w!<CR>
+nnoremap <leader>bd :bp\|bd! #<CR>
+nnoremap <tab> :bn<CR>
+nnoremap <S-tab> :bp<CR>
+
+"General Remaps
+:imap jk <Esc>
+nnoremap <Space> a<Space><Esc>
+nnoremap j gj
+nnoremap k gk
+nnoremap <Up> O<Esc>
+nnoremap <Down> o<Esc>
+
+"Buffer variables that determine python formatting
+au BufNewFile,BufRead *.py set filetype=python
+au BufNewFile,BufRead *.sql set filetype=sql
+
+"Save folds
+autocmd BufWinLeave *.* mkview
+autocmd BufWinEnter *.* silent loadview
+
+"Functions
+:function! Inc(int)
+:	let count = 1
+:	while a:int > counter-1
+:		execute "normal! I\<C-R>=counter\<CR>"
+:		normal j
+:		let counter+=1
+:	endwhile
+:endfunction
+
+nnoremap <silent> <F1> <c-w><S-k>:set nonu<CR>:set norelativenumber<CR>
+nnoremap <silent> <F2> :set nu<CR>:set relativenumber<CR>
+
